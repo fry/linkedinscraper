@@ -1,5 +1,5 @@
 import requests
-import json
+import pyjson5 as json
 import sqlite3
 import sys
 from sqlite3 import Error
@@ -18,7 +18,7 @@ def load_config(file_name):
     with open(file_name) as f:
         return json.load(f)
 
-def get_with_retry(url, config, retries=3, delay=1):
+def get_with_retry(url, config, retries=5, delay=10):
     # Get the URL with retries and delay
     for i in range(retries):
         try:
@@ -26,7 +26,11 @@ def get_with_retry(url, config, retries=3, delay=1):
                 r = requests.get(url, headers=config['headers'], proxies=config['proxies'], timeout=5)
             else:
                 r = requests.get(url, headers=config['headers'], timeout=5)
-            return BeautifulSoup(r.content, 'html.parser')
+            if r.status_code != 200:
+                print(f"request failed with status code: {r.status_code}")
+                tm.sleep(delay)
+            else:
+                return BeautifulSoup(r.content, 'html.parser')
         except requests.exceptions.Timeout:
             print(f"Timeout occurred for URL: {url}, retrying in {delay}s...")
             tm.sleep(delay)

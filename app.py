@@ -1,7 +1,7 @@
 from flask import Flask, render_template, jsonify
 import pandas as pd
 import sqlite3
-import json
+import pyjson5 as json
 import openai
 from pdfminer.high_level import extract_text
 from flask_cors import CORS

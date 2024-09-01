@@ -8,3 +8,4 @@ pysocks
 openai
 pdfminer.six
 flask_cors
+pyjson5
